@@ -125,15 +125,15 @@
             };
 
             new MTLLoader()
-                .setPath('https://threejs.org/examples/models/obj/male01/')
-                .load('male01.mtl', function(materials) {
+                .setPath('https://threejs.org/examples/models/obj/male02/')
+                .load('male02.mtl', function(materials) {
 
                     materials.preload();
 
                     new OBJLoader()
                         .setMaterials(materials)
-                        .setPath('https://threejs.org/examples/models/obj/male01/')
-                        .load('male01.obj', function(object) {
+                        .setPath('https://threejs.org/examples/models/obj/male02/')
+                        .load('male02.obj', function(object) {
 
                             object.position.set(-1500, -2400, -200);
                             object.rotation.y = Math.PI / 2;
@@ -187,6 +187,7 @@
 </body>
 
 </html>
+
 
 
 
