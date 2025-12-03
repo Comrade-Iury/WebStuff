@@ -29,13 +29,14 @@
 		</script>
     <script type="module">
         import * as THREE from 'three';
-        import {
-            OrbitControls
-        } from 'three/addons/controls/OrbitControls.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+		import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+		import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
         var camera, scene, renderer;
         var controls;
         var ambientLight, light;
+		let object;
         init();
         animate();
 
@@ -187,5 +188,6 @@
 </body>
 
 </html>
+
 
 
