@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)http://nfbgu1.ru/webgl/webgl.html -->
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>three.js webgl - геометрические фигуры</title>
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="https://threejs.org/examples/main.css">
+</head>
+
+<body>
+    <div id="info">
+        Трехмерные фигуры
+    </div>
+    <h1>Фигуры</h1>
+    <a href="index.html">Назад</a>
+
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+				"imports": {
+					"three": "https://threejs.org/build/three.module.js",
+					"three/addons/": "https://threejs.org/examples/jsm/"
+				}
+			}
+		</script>
+   
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EventControls } from 'https://alexan0308.github.io/threejs/examples/js/controls/EventControls.js';
+        import { TeapotGeometry } from 'https://threejs.org/examples/jsm/geometries/TeapotGeometry.js';
+        var camera, scene, renderer;
+        var controls;
+        var ambientLight, light;
+        var Cube;
+        const dragObjects = [];
+
+        init();
+        animate();
+        
+        function init() {
+
+            var container = document.createElement('div');
+            document.body.appendChild(container);
+
+            // CAMERA
+            camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 10, 5000);
+            camera.position.set(0, 800, 1200);
+
+            // LIGHTS
+            ambientLight = new THREE.AmbientLight(0xffd3a3, 3.0); // 0.2
+
+            light = new THREE.DirectionalLight(0xa3d3ff, 1.0);
+            light.position.set(1, 1, 1);
+            // direction is set in GUI
+
+            // RENDERER
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // EVENTS
+            window.addEventListener('resize', onWindowResize, false);
+
+            // CONTROLS
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.addEventListener('change', render);
+            controls.rotateSpeed = 0.5;
+            controls.enableZoom = true;
+            controls.zoomSpeed = 0.5;
+
+            controls.minDistance = 500;
+            controls.maxDistance = 2500;
+
+            controls.enableDamping = true;
+
+            // scene itself
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffdfb1);
+
+            scene.add(ambientLight);
+            scene.add(light);
+
+
+            // Объекты меняем тут
+
+            var materialYellow = new THREE.MeshMatcapMaterial({
+                color: 0xffc500
+            });
+            var materialBlue = new THREE.MeshMatcapMaterial({
+                color: 0x0e51a7
+            });
+            var materialRed = new THREE.MeshMatcapMaterial({
+                color: 0xff3100
+            });
+			
+
+			
+			var shape = new THREE.Shape();
+			shape.moveTo(0, 0);
+			shape.lineTo(0, 400);
+			shape.lineTo(100, 400);
+			shape.lineTo(100, 250);
+			shape.lineTo(200, 400);
+			shape.lineTo(300, 400);
+			shape.lineTo(200, 200);
+			shape.lineTo(300, 0);
+			shape.lineTo(200, 0);
+			shape.lineTo(100, 150);
+			shape.lineTo(100, 0);
+			shape.lineTo(0, 0);
+
+			var extrudeSettings = {
+				depth: 50,
+				bevelEnabled: true,
+				bevelThickness: 10,
+				bevelSize: 10,
+				bevelSegments: 30
+			};
+
+			var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+			var mesh = new THREE.Mesh(geometry, materialBlue);
+            mesh.height = 0;
+			scene.add(mesh);
+			dragObjects.push(mesh);
+
+
+            var geometry = new THREE.BoxGeometry(200, 200, 200);
+            var Cube = new THREE.Mesh(geometry, materialRed);
+            Cube.height = 200;
+            Cube.position.set(300, 100, -300);
+            Cube.rotation.y = Math.PI / 3;
+            scene.add(Cube);
+			dragObjects.push(Cube);
+
+            var geometry = new THREE.BoxGeometry(120, 120, 320);
+            var Box = new THREE.Mesh(geometry, materialRed);
+            Box.height = 120;
+            Box.position.set(-350, 60, 200);
+            Box.rotation.y = Math.PI / 3;
+            scene.add(Box);
+			dragObjects.push(Box);
+
+            var geometry = new THREE.SphereGeometry(150, 50, 50);
+            var Sphere1 = new THREE.Mesh(geometry, materialYellow);
+            Sphere1.height = 300;
+            Sphere1.position.set(0, 150, -250);
+            scene.add(Sphere1);
+			dragObjects.push(Sphere1);
+
+
+
+            var radiusTop = 0;
+            var radiusBottom = 130;
+            var heigth = 250;
+            var segments = 36;
+
+            var geometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, heigth, segments);
+            var Cone = new THREE.Mesh(geometry, materialYellow);
+            Cone.height = 250;
+            Cone.position.set(400, 125, 0);
+            scene.add(Cone);
+			dragObjects.push(Cone);
+
+            var geometry = new THREE.CylinderGeometry(radiusBottom, radiusBottom, heigth, 3);
+            var Prysm = new THREE.Mesh(geometry, materialBlue);
+            Prysm.position.set(-50, 125, 250);
+            Prysm.height = 250;
+            scene.add(Prysm);
+			dragObjects.push(Prysm);
+
+            var geometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, heigth, 4);
+            var pyramid = new THREE.Mesh(geometry, materialRed);
+            pyramid.position.set(230, 125, 200);
+            pyramid.height = 250;
+            scene.add(pyramid);
+			dragObjects.push(pyramid);
+
+
+            var geometry = new THREE.CylinderGeometry(radiusBottom, radiusBottom, heigth, segments);
+            var cylinder = new THREE.Mesh(geometry, materialBlue);
+            cylinder.position.set(-300, 125, -300);
+            cylinder.height = 250;
+            scene.add(cylinder);
+			dragObjects.push(cylinder);
+            
+            
+            var geometry = new TeapotGeometry(100, 20);
+            var teapot = new THREE.Mesh(geometry, materialYellow);
+            teapot.position.set(-320, 100, -50);
+            teapot.height = 200;
+            scene.add(teapot);
+			dragObjects.push(teapot);
+            
+
+            //const helper = new THREE.GridHelper(1000, 10);
+            //helper.rotation.x = Math.PI / 2;
+            //helper.position.y = - 1;
+            //scene.add(helper);
+            const gridSize = 1500;
+			const gridDivisions = 10;
+			const gridHelper = new THREE.GridHelper(gridSize, gridDivisions);
+			scene.add(gridHelper);
+            
+            const planeGeometry = new THREE.PlaneGeometry(1500, 1500);
+			const planeMaterial = new THREE.MeshBasicMaterial({
+				visible: true,
+                color: 0xD3D3D3 // Делаем невидимой
+			});
+			const dragPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+			dragPlane.rotation.x = -Math.PI / 2; // Горизонтальная плоскость
+			dragPlane.position.y = 0;
+			scene.add(dragPlane);
+            
+            console.log('Drag objects count:', dragObjects.length); // Должно быть > 0
+            console.log('Camera:', camera); // Должен существовать
+            console.log('Renderer DOM:', renderer.domElement); // Должен существовать
+			
+				//var Material = new THREE.MeshPhongMaterial( { color: 0xD3D3D3, side: THREE.DoubleSide  } );
+		
+				//var Geometry = new THREE.PlaneGeometry( 1200, 1200, 1, 1 );
+
+				//var checkerboard = new THREE.Mesh( Geometry, Material );
+				//checkerboard.position.y = - 1;
+				//checkerboard.rotation.x =  Math.PI / 2;
+				//scene.add( checkerboard );
+					
+				var eventControl = new EventControls( dragObjects, camera, renderer.domElement );
+				eventControl.setDraggable( render, true );              
+                eventControl.setMap ( dragPlane );
+                eventControl.setOrbitControl( controls );					
+	
+				eventControl.attachEvent( 'dragAndDrop', function () {
+   
+					//this.event.object.position.y = this.event.object.height / 2;
+					this.event.object.position.x = 
+						100*Math.round( this.event.object.position.x /100 );
+					this.event.object.position.z = 
+						100*Math.round( this.event.object.position.z /100 );                 
+				});	
+            
+			
+			
+
+        }
+
+        // EVENT HANDLERS
+
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        //
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+            controls.update(); //
+            //Cube.position.x +=1;
+            //Cube.rotation.z += 0.1;
+            render();
+
+        }
+
+        function render() {
+
+            renderer.render(scene, camera);
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
